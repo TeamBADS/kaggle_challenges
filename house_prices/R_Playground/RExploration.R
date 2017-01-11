@@ -47,6 +47,12 @@ hchart(train$MSSubClass, color = "#B71C1C", name = "MSSubClass") %>%
                list(1, 'rgb(200, 200, 255)')
              )))
 
+#Unclear Different in Price based on Subclass (Group further by definition?)
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$MSSubClass,
+                        name = "X", color = "#2980b9") 
+
 #Zoning - Most of the property are Residential with Low Density)
 
 # C	Commercial
@@ -67,6 +73,12 @@ hchart(train$MSZoning, color = "#B71C1C", name = "MSZoning") %>%
                list(0, 'rgb(255, 255, 255)'),
                list(1, 'rgb(200, 200, 255)')
              )))
+
+#Definitely some clear different in average price based on zoning
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$MSZoning,
+                        name = "X", color = "#2980b9") 
 
 #LotFrontage/LotArea - Linear Feet of street connected to the property/Lot size in square feet
 
@@ -104,6 +116,35 @@ highchart() %>%
 
 
 hchart(train, "scatter", x = LotFrontage, y = LotArea, group = MSZoning)
+
+#Street and alley is mostly useless with so many NA and singular category
+
+#Lotshape is possible useful, need to investigate further??
+
+train$LotShape <- as.factor(train$LotShape)
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$LotShape,
+                        name = "X", color = "#2980b9") 
+
+
+#Landcontour is too imbalance in term of category distribution. Useless?
+
+train$LandContour <- as.factor(train$LandContour)
+
+hchart(train$LandContour, color = "#B71C1C", name = "LandContour") %>% 
+  hc_chart(borderColor = '#EBBA95',
+           borderRadius = 10,
+           borderWidth = 2,
+           backgroundColor = list(
+             linearGradient = c(0, 0, 500, 500),
+             stops = list(
+               list(0, 'rgb(255, 255, 255)'),
+               list(1, 'rgb(200, 200, 255)')
+             )))
+
+
+
 
 #Visualisation of Year Built
 
