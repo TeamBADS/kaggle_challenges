@@ -9,6 +9,12 @@ library(data.table)
 
 train <- fread("train.csv")
 
+#check missing data
+
+summary(is.na(train))
+
+#large missing data are from Alley, FireplaceQu, MiscFeature, Fence, PoolQC
+
 #Visualisation of MSSubClass
 
 # 20	1-STORY 1946 & NEWER ALL STYLES
@@ -41,7 +47,65 @@ hchart(train$MSSubClass, color = "#B71C1C", name = "MSSubClass") %>%
                list(1, 'rgb(200, 200, 255)')
              )))
 
-#Visualisation of Year
+#Zoning - Most of the property are Residential with Low Density)
+
+# C	Commercial
+# FV	Floating Village Residential
+# RH	Residential High Density
+# RL	Residential Low Density
+# RM	Residential Medium Density
+
+train$MSZoning <- as.factor(train$MSZoning)
+
+hchart(train$MSZoning, color = "#B71C1C", name = "MSZoning") %>% 
+  hc_chart(borderColor = '#EBBA95',
+           borderRadius = 10,
+           borderWidth = 2,
+           backgroundColor = list(
+             linearGradient = c(0, 0, 500, 500),
+             stops = list(
+               list(0, 'rgb(255, 255, 255)'),
+               list(1, 'rgb(200, 200, 255)')
+             )))
+
+#LotFrontage/LotArea - Linear Feet of street connected to the property/Lot size in square feet
+
+hchart(train$LotFrontage, color = "#B71C1C", name = "LotFrontage") %>% 
+  hc_chart(borderColor = '#EBBA95',
+           borderRadius = 10,
+           borderWidth = 2,
+           backgroundColor = list(
+             linearGradient = c(0, 0, 500, 500),
+             stops = list(
+               list(0, 'rgb(255, 255, 255)'),
+               list(1, 'rgb(200, 200, 255)')
+             )))
+
+#Quite a lot of property has no frontage?
+
+highchart() %>% 
+  hc_add_series_boxplot(train$LotFrontage, train$MSZoning,
+                        name = "X", color = "#2980b9") 
+
+hchart(train$LotArea, color = "#B71C1C", name = "LotArea") %>% 
+  hc_chart(borderColor = '#EBBA95',
+           borderRadius = 10,
+           borderWidth = 2,
+           backgroundColor = list(
+             linearGradient = c(0, 0, 500, 500),
+             stops = list(
+               list(0, 'rgb(255, 255, 255)'),
+               list(1, 'rgb(200, 200, 255)')
+             )))
+
+highchart() %>% 
+  hc_add_series_boxplot(train$LotArea, train$MSZoning,
+                        name = "X", color = "#2980b9") 
+
+
+hchart(train, "scatter", x = LotFrontage, y = LotArea, group = MSZoning)
+
+#Visualisation of Year Built
 
 hchart(train$YearBuilt, color = "#B71C1C", name = "Year Built") %>% 
   hc_chart(borderColor = '#EBBA95',
