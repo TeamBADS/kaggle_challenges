@@ -143,12 +143,27 @@ hchart(train$LandContour, color = "#B71C1C", name = "LandContour") %>%
                list(1, 'rgb(200, 200, 255)')
              )))
 
+#Utilities is useless
 
+table(train$Utilities)
 
+#LotConfig has potential
 
-#Visualisation of Year Built
+table(train$LotConfig)
 
-hchart(train$YearBuilt, color = "#B71C1C", name = "Year Built") %>% 
+train$LandContour <- as.factor(train$LotConfig)
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$LotConfig,
+                        name = "X", color = "#2980b9") 
+
+#LandSlope is very small in distribution also not very big in distribution?
+
+table(train$LandSlope)
+
+train$LandSlope <- as.factor(train$LandSlope)
+
+hchart(train$LandSlope, color = "#B71C1C", name = "LandContour") %>% 
   hc_chart(borderColor = '#EBBA95',
            borderRadius = 10,
            borderWidth = 2,
@@ -158,3 +173,59 @@ hchart(train$YearBuilt, color = "#B71C1C", name = "Year Built") %>%
                list(0, 'rgb(255, 255, 255)'),
                list(1, 'rgb(200, 200, 255)')
              )))
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$LandSlope,
+                        name = "X", color = "#2980b9") 
+
+#Neighborhood, BldgType, HouseStyle, OverallQual is definitely useful
+
+table(train$Neighborhood)
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$Neighborhood,
+                        name = "X", color = "#2980b9")
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$BldgType,
+                        name = "X", color = "#2980b9") 
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$HouseStyle,
+                        name = "X", color = "#2980b9") 
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$OverallQual,
+                        name = "X", color = "#2980b9")
+
+#Overallcondition not as clear as overallqual
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$OverallCond,
+                        name = "X", color = "#2980b9") 
+
+#Condition could be useful, but unclear how to best utilized it.
+
+# Condition: Proximity to various conditions
+# 
+# Artery	Adjacent to arterial street
+# Feedr	Adjacent to feeder street	
+# Norm	Normal	
+# RRNn	Within 200' of North-South Railroad
+# RRAn	Adjacent to North-South Railroad
+# PosN	Near positive off-site feature--park, greenbelt, etc.
+# PosA	Adjacent to postive off-site feature
+# RRNe	Within 200' of East-West Railroad
+# RRAe	Adjacent to East-West Railroad
+
+table(train$Condition1)
+table(train$Condition2)
+
+#YearBuilt (note to self, do a regression line through this???)
+#YearRemodAdd and build could work together???
+
+train$YearRemodAdd <- as.factor(train$YearRemodAdd)
+
+hchart(train, "scatter", x = YearBuilt, y = SalePrice)
+
+hchart(train, "scatter", x = YearRemodAdd, y = SalePrice)
