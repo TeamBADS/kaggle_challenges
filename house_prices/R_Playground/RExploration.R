@@ -229,3 +229,89 @@ train$YearRemodAdd <- as.factor(train$YearRemodAdd)
 hchart(train, "scatter", x = YearBuilt, y = SalePrice)
 
 hchart(train, "scatter", x = YearRemodAdd, y = SalePrice)
+
+#Roofstyl maybe useful, Roofmatl is useless.
+
+table(train$RoofStyle)
+table(train$RoofMatl)
+
+#Exterior could still be useful
+
+table(train$Exterior1st)
+table(train$Exterior2nd)
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$Exterior1st,
+                        name = "X", color = "#2980b9") 
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$Exterior2nd,
+                        name = "X", color = "#2980b9") 
+
+#MasVnrType and MasVnrArea both are potentially useful
+
+table(train$MasVnrType)
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$MasVnrType,
+                        name = "X", color = "#2980b9") 
+
+table(train$MasVnrArea)
+
+hchart(train, "scatter", x = MasVnrArea, y = SalePrice, group = MasVnrType)
+
+#ExterQual, ExterCond, and Foundation are all potentially useful
+
+table(train$ExterQual)
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$ExterQual,
+                        name = "X", color = "#2980b9") 
+
+table(train$ExterCond)
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$ExterCond,
+                        name = "X", color = "#2980b9") 
+
+table(train$Foundation)
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$Foundation,
+                        name = "X", color = "#2980b9") 
+
+#BsmtQual is great
+#BsmtCond less useful
+#BsmtExposure is useful,
+#BsmtFinType1 has potential
+#BsmtFinSF1 is definitely useful
+#BsmtFinType2 may keep
+#BsmtFinSF2 is definitely useful,
+#BsmtUnfSF could be useful
+#TotalBsmtSF IS DEFINITELY IMPORTANT
+#Heating is not very useful
+#HeatingQC needs more informtion
+#CentralAir is definitely useful
+#Electrical is definitely useful
+#LowQualFinSF is not very useful
+#GrLivArea is VERY IMPORTANT
+#BsmtFullBath,FullBath,HalfBath could be useful
+#BsmtHalfBath is not very useful
+#BedroomAbvGr has potential
+#KitchenAbvGr may not be useful
+#KitchenQual is VERY USEFUL
+#TotRmsAbvGrd is definitely useful
+#Functional might not be useful
+#Fireplaces and FireplaceQu is DEFINITELY USEFUL
+#GarageType is useful
+#GarageYrBlt 
+
+
+table(train$GarageYrBlt)
+
+highchart() %>% 
+  hc_add_series_boxplot(train$SalePrice, train$GarageType,
+                        name = "X", color = "#2980b9") 
+
+hchart(train, "scatter", x = GarageYrBlt, y = SalePrice)
+
+
