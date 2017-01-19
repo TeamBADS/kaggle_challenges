@@ -1,0 +1,78 @@
+---
+title: "R House Prices"
+author: "BADS"
+date: "January 15, 2017"
+output: html_document
+---
+
+```{r setup,echo = FALSE ,include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+setwd("~/kaggle_challenges/house_prices")
+
+library(sqldf)
+library(devtools)
+library(highcharter)
+library(data.table)
+library(dplyr)
+library(corrplot)
+
+#read the data into R
+
+train <- fread("train.csv")
+```
+
+## House Prices: Advanced Regression Techniques
+
+Data fields
+
+
+```{r check NA}
+
+cattable <- Filter(is.character, train)
+
+cattable <- sapply( cattable, as.factor )
+
+colSums(is.na(cattable))
+
+```
+
+Potential Issue with NA in Alley, FireplaceQu, MiscFeature, Fence, PoolQC
+
+```{r checking category distribution}
+
+summary(cattable)
+
+```
+
+Utilities, GarageQual, GarageCond, Electrical, Functional, Street, PavedDrive, CentralAir, LandSlope, LandContour, Condition1, Condition2, RoofMatl, ExterCond have small distribution of catagory type
+
+### Correlation Table (Numerical Variable)
+
+
+```{r numeric, echo = FALSE}
+
+correlationtable <- Filter(is.numeric, train)
+
+cor.mtest <- function(mat, ...) {
+    mat <- as.matrix(mat)
+    n <- ncol(mat)
+    p.mat<- matrix(NA, n, n)
+    diag(p.mat) <- 0
+    for (i in 1:(n - 1)) {
+        for (j in (i + 1):n) {
+            tmp <- cor.test(mat[, i], mat[, j], ...)
+            p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+        }
+    }
+  colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+  p.mat
+}
+# matrix of the p-value of the correlation
+p.mat <- cor.mtest(correlationtable)
+
+corrplot(cor(correlationtable,use = "complete.obs"), order="hclust", 
+         p.mat = p.mat, sig.level = 0.01)
+
+```
+
