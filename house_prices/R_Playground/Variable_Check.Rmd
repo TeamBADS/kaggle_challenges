@@ -8,18 +8,30 @@ output: html_document
 ```{r setup,echo = FALSE ,include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-setwd("~/kaggle_challenges/house_prices")
-
 library(sqldf)
 library(devtools)
 library(highcharter)
 library(data.table)
 library(dplyr)
 library(corrplot)
+library(randomForest)
+library(caret)
 
 #read the data into R
 
-train <- fread("train.csv")
+train <- fread("rf_train_x.csv")
+train_original <- fread("train.csv")
+
+#Convert Column Name for 1stFlrSf and 2ndFlrSf
+
+colnames(train)[2] <- "firstfloorsf"
+colnames(train)[3] <- "secondfloorsf"
+colnames(train)[4] <- "ThirdssnPorch"
+
+train$SalePrice <- train_original$SalePrice
+
+train<-train[,2:ncol(train)]
+
 ```
 
 ## House Prices: Advanced Regression Techniques
@@ -74,5 +86,47 @@ p.mat <- cor.mtest(correlationtable)
 corrplot(cor(correlationtable,use = "complete.obs"), order="hclust", 
          p.mat = p.mat, sig.level = 0.01)
 
+corrplot(cor(correlationtable,use = "complete.obs"), order="hclust", 
+         p.mat = p.mat, sig.level = 0.01)
+
 ```
 
+
+```{r forest, echo = FALSE}
+
+model1 <- randomForest(SalePrice ~ .,data=train, na.action=na.omit ,mtry=3,importance=TRUE)
+
+importance(model1,type=2)
+
+plot(model1, log="y")
+
+varImpPlot(model1)
+
+check <- data.frame(train$SalePrice,model1$predicted)
+colnames(check) <- c("actual","predict")
+
+r2 <- 1 - (sum((check$actual-check$predict )^2)/sum((check$actual-mean(check$actual))^2))
+
+
+
+```
+
+```{r crossforest, echo = FALSE}
+
+set.seed(998)
+inTraining <- createDataPartition(train$SalePrice, p = .75, list = FALSE)
+
+training <- train[ inTraining,]
+testing  <- train[-inTraining,]
+
+fitControl <- trainControl(## 10-fold CV
+                           method = "repeatedcv",
+                           number = 5,
+                           repeats = 10)
+
+rfFit1 <- train(SalePrice ~ ., data = training, 
+                 method = "rf", 
+                 trControl = fitControl,
+                 verbose = TRUE)
+
+```
